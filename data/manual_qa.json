@@ -1,0 +1,242 @@
+[
+  {
+    "paper_id": "2603.12261v1",
+    "title": "The Latent Color Subspace: Emergent Order in High-Dimensional Chaos",
+    "question": "What specific color properties does the Latent Color Subspace (LCS) interpretation reveal within the latent space of FLUX.1?",
+    "answer": "The Latent Color Subspace (LCS) interpretation reveals a structure reflecting Hue, Saturation, and Lightness within the Variational Autoencoder latent space of FLUX.1."
+  },
+  {
+    "paper_id": "2603.12255v1",
+    "title": "Spatial-TTT: Streaming Visual-based Spatial Intelligence with Test-Time Training",
+    "question": "What is the core challenge addressed by Spatial-TTT in processing long-horizon scene videos for spatial intelligence?",
+    "answer": "The core challenge addressed by Spatial-TTT is not merely increasing context window size, but rather how spatial information is effectively selected, organized, and retained over time from visual observations."
+  },
+  {
+    "paper_id": "2603.12248v1",
+    "title": "Matching Features, Not Tokens: Energy-Based Fine-Tuning of Language Models",
+    "question": "What is the core limitation of Cross-Entropy (CE) training for language models that Energy-Based Fine-Tuning (EBFT) aims to address?",
+    "answer": "Cross-entropy (CE) training optimizes next-token prediction under teacher forcing, which does not directly align with sequence-level behavior under model rollouts, whereas EBFT targets sequence-level statistics."
+  },
+  {
+    "paper_id": "2603.12246v1",
+    "title": "Examining Reasoning LLMs-as-Judges in Non-Verifiable LLM Post-Training",
+    "question": "What is the main research gap addressed by this paper concerning reasoning LLMs-as-Judges?",
+    "answer": "The paper addresses the gap in systematically examining the effectiveness of reasoning judges in actual policy training for LLM alignment, despite their demonstrated performance on static evaluation benchmarks."
+  },
+  {
+    "paper_id": "2603.12244v1",
+    "title": "Separable neural architectures as a primitive for unified predictive and generative intelligence",
+    "question": "What is the core idea behind Separable Neural Architectures (SNAs) as presented in the paper?",
+    "answer": "SNAs formalize a representational class that unifies additive, quadratic, and tensor-decomposed neural models by constraining interaction order and tensor rank, thereby imposing a structural inductive bias that factorizes high-dimensional mappings into low-arity components."
+  },
+  {
+    "paper_id": "2603.12240v1",
+    "title": "BiGain: Unified Token Compression for Joint Generation and Classification",
+    "question": "What is the core insight behind BiGain that allows it to preserve generation quality while improving classification in accelerated diffusion models?",
+    "answer": "The core insight behind BiGain is frequency separation, which involves mapping feature-space signals into a frequency-aware representation. This disentangles fine details from global semantics, enabling compression that respects both generative fidelity and discriminative utility."
+  },
+  {
+    "paper_id": "2603.12237v1",
+    "title": "STAMP: Selective Task-Aware Mechanism for Text Privacy",
+    "question": "How does STAMP determine the allocation of privacy budgets across tokens in its text privatization framework?",
+    "answer": "STAMP selectively allocates privacy budgets across tokens by jointly considering each token's importance to the downstream task, as measured via a task- or query-specific representation, and its privacy sensitivity, such as names, dates, or identifiers."
+  },
+  {
+    "paper_id": "2603.12231v1",
+    "title": "Temporal Straightening for Latent Planning",
+    "question": "What is the core idea behind temporal straightening as proposed in this paper for latent planning?",
+    "answer": "Temporal straightening is a method inspired by perceptual straightening in human vision that aims to improve representation learning for latent planning by encouraging locally straightened latent trajectories, making Euclidean distance a better proxy for geodesic distance and improving the conditioning of the planning objective."
+  },
+  {
+    "paper_id": "2603.12230v1",
+    "title": "Security Considerations for Artificial Intelligence Agents",
+    "question": "What specific security failure modes are introduced by agent architectures that change core assumptions around code-data separation, authority boundaries, and execution predictability?",
+    "answer": "Agent architectures can introduce new confidentiality, integrity, and availability failure modes by altering fundamental assumptions about code-data separation, authority boundaries, and execution predictability."
+  },
+  {
+    "paper_id": "2603.12228v1",
+    "title": "Neural Thickets: Diverse Task Experts Are Dense Around Pretrained Weights",
+    "question": "How does the density of task-specific experts around pretrained weights differ between small and large, well-pretrained models according to the 'Neural Thickets' paper?",
+    "answer": "The paper posits that in small models, task-specific experts occupy a negligible fraction of the parameter distribution's volume, making them hard to find. In contrast, for large, well-pretrained models, the density of task-experts increases dramatically, with diverse specialists populating a substantial fraction of the neighborhood around the pretrained weights."
+  },
+  {
+    "paper_id": "2603.12227v1",
+    "title": "Interpreting Contrastive Embeddings in Specific Domains with Fuzzy Rules",
+    "question": "What approach does this paper propose to address the limitations of CLIP embeddings in specific domains?",
+    "answer": "This paper proposes using a fuzzy rule-based classification system in conjunction with standard text processing techniques to interpret contrastive embeddings in specific domains."
+  },
+  {
+    "paper_id": "2603.12222v1",
+    "title": "HiAP: A Multi-Granular Stochastic Auto-Pruning Framework for Vision Transformers",
+    "question": "How does HiAP differ from previous structured pruning methods for Vision Transformers in terms of its approach to sparsity and training?",
+    "answer": "Unlike previous structured pruning methods that often operate at a single granularity and use multi-stage pipelines with post-hoc thresholding, HiAP is a continuous relaxation framework that discovers optimal sub-networks in a single end-to-end training phase without manual heuristics or predefined per-layer sparsity targets."
+  },
+  {
+    "paper_id": "2603.12201v1",
+    "title": "IndexCache: Accelerating Sparse Attention via Cross-Layer Index Reuse",
+    "question": "How does IndexCache aim to improve the efficiency of sparse attention mechanisms like DeepSeek Sparse Attention (DSA)?",
+    "answer": "IndexCache aims to accelerate sparse attention by exploiting the redundancy in top-k token selections across consecutive layers. It achieves this by partitioning layers into Full layers that run their own indexers and other layers that reuse the index information from preceding Full layers, thereby reducing the computational overhead."
+  },
+  {
+    "paper_id": "2603.12183v1",
+    "title": "Proof-Carrying Materials: Falsifiable Safety Certificates for Machine-Learned Interatomic Potentials",
+    "question": "What is the primary limitation of current Machine-Learned Interatomic Potentials (MLIPs) in materials screening that Proof-Carrying Materials (PCM) aims to address?",
+    "answer": "Current MLIPs are deployed for high-throughput materials screening without formal reliability guarantees, leading to a significant failure rate in identifying stable materials, as demonstrated by a recall of only 0.07 on a large benchmark."
+  },
+  {
+    "paper_id": "2603.12163v1",
+    "title": "A Quantitative Characterization of Forgetting in Post-Training",
+    "question": "According to the paper's theoretical results under the two-mode mixture abstraction, what are the two distinct forms of forgetting that can occur during continual post-training?",
+    "answer": "The two forms of forgetting formalized in the paper are (i) mass forgetting, where the old mixture weight collapses to zero, and (ii) old-component drift, where an already-correct old component shifts during training."
+  },
+  {
+    "paper_id": "2603.12151v1",
+    "title": "IsoCompute Playbook: Optimally Scaling Sampling Compute for LLM RL",
+    "question": "According to the IsoCompute Playbook, how does the compute-optimal number of parallel rollouts per problem change with the compute budget, and what causes this trend for easy versus hard problems?",
+    "answer": "The compute-optimal number of parallel rollouts per problem increases predictably with the compute budget and then saturates. For easy problems, this trend is driven by solution sharpening, while for hard problems, it is driven by coverage expansion."
+  },
+  {
+    "paper_id": "2603.12146v1",
+    "title": "FlashMotion: Few-Step Controllable Video Generation with Trajectory Guidance",
+    "question": "What is the primary limitation of existing trajectory-controllable video generation methods that FlashMotion aims to address?",
+    "answer": "Existing trajectory-controllable video generation methods rely on a multi-step denoising process, which leads to significant time redundancy and computational overhead."
+  },
+  {
+    "paper_id": "2603.12145v1",
+    "title": "Automatic Generation of High-Performance RL Environments",
+    "question": "What are the three key components of the reusable recipe proposed in the paper for automatically generating high-performance RL environments?",
+    "answer": "The reusable recipe consists of a generic prompt template, hierarchical verification, and iterative agent-assisted repair."
+  },
+  {
+    "paper_id": "2603.12126v1",
+    "title": "Hoi3DGen: Generating High-Quality Human-Object-Interactions in 3D",
+    "question": "What specific problem does Hoi3DGen address in existing 3D human-object interaction generation methods, and how does it aim to overcome it?",
+    "answer": "Hoi3DGen addresses the Janus problem and lack of text prompt fidelity in existing 3D human-object interaction generation methods, which often rely on score distillation from text-to-image models and suffer from scarce high-quality interaction data. It aims to overcome this by curating realistic interaction data using multimodal large language models and implementing a full text-to-3D pipeline to achieve improved interaction fidelity."
+  },
+  {
+    "paper_id": "2603.12118v1",
+    "title": "Cornserve: A Distributed Serving System for Any-to-Any Multimodal Models",
+    "question": "What is the core challenge in serving Any-to-Any multimodal models that Cornserve aims to address?",
+    "answer": "The core challenge is that different requests with varying input and output modalities follow distinct paths through the model's computation graph, and each model component exhibits unique scaling characteristics, making efficient and flexible serving difficult."
+  },
+  {
+    "paper_id": "2603.12110v1",
+    "title": "Taming the Adversary: Stable Minimax Deep Deterministic Policy Gradient via Fractional Objectives",
+    "question": "What is the core problem that the proposed Minimax Deep Deterministic Policy Gradient (MMDDPG) framework aims to address in reinforcement learning?",
+    "answer": "The MMDDPG framework aims to address the problem of unstable or degraded performance of RL agents when deployed in environments with unexpected external disturbances and model uncertainties."
+  },
+  {
+    "paper_id": "2603.12102v1",
+    "title": "Wasserstein Gradient Flows for Batch Bayesian Optimal Experimental Design",
+    "question": "What is the primary challenge in applying Bayesian Optimal Experimental Design (BOED) in practice, especially in the batch setting, that this paper aims to address?",
+    "answer": "The primary challenge is the difficulty of optimizing the chosen utility function, such as the Expected Information Gain (EIG), which is often high-dimensional and strongly non-convex, particularly in the batch setting where multiple experiments are designed simultaneously."
+  },
+  {
+    "paper_id": "2603.12091v1",
+    "title": "Resource-Efficient Iterative LLM-Based NAS with Feedback Memory",
+    "question": "How does the proposed feedback memory mechanism in the LLM-based NAS system maintain context while enabling iterative learning?",
+    "answer": "The feedback memory uses a sliding window of $K=5$ recent improvement attempts to keep the context size constant, providing sufficient signal for iterative learning."
+  },
+  {
+    "paper_id": "2603.12087v1",
+    "title": "Cross-Domain Policy Optimization via Bellman Consistency and Hybrid Critics",
+    "question": "What are the two fundamental and intertwined challenges in cross-domain reinforcement learning that this paper aims to address?",
+    "answer": "The paper aims to address the challenges of distinct state or action spaces between source and target domains, requiring sophisticated inter-domain mappings, and the difficulty in identifying the transferability of a source-domain model, which can lead to negative transfer effects."
+  },
+  {
+    "paper_id": "2603.12073v1",
+    "title": "A Multi-Label Temporal Convolutional Framework for Transcription Factor Binding Characterization",
+    "question": "How does this paper propose to address the limitations of current TF binding site prediction methods that often focus on individual TFs and binary classification?",
+    "answer": "This paper investigates DNA TF binding site recognition as a multi-label classification problem, moving beyond the limitations of current approaches that focus on individual TFs and binary classification tasks."
+  },
+  {
+    "paper_id": "2603.12060v1",
+    "title": "Chemical Reaction Networks Learn Better than Spiking Neural Networks",
+    "question": "What specific formulation of chemical reaction networks does the paper use to mathematically prove their learning capabilities compared to spiking neural networks?",
+    "answer": "The paper uses the deterministic mass-action kinetics formulation of chemical reaction networks to mathematically prove that they can solve tasks for which spiking neural networks require hidden layers."
+  },
+  {
+    "paper_id": "2603.12055v1",
+    "title": "Continual Learning with Vision-Language Models via Semantic-Geometry Preservation",
+    "question": "What is the core problem SeGP-CL aims to solve in continual learning for VLMs, and what is its proposed mechanism to address it?",
+    "answer": "SeGP-CL aims to address catastrophic forgetting in continual learning for VLMs, which is exacerbated by new task supervision inducing geometric distortion in the cross-modal semantic geometry. To tackle this, SeGP-CL probes drift-prone regions by constructing a compact set of adversarial anchors using dual-targeted projected gradient descent (DPGD)."
+  },
+  {
+    "paper_id": "2603.12038v1",
+    "title": "Slow-Fast Inference: Training-Free Inference Acceleration via Within-Sentence Support Stability",
+    "question": "What is the core observation that motivates the Slow-Fast Inference (SFI) framework?",
+    "answer": "The core observation is that during autoregressive decoding, the dominant attention support within a sentence or a short semantically coherent span tends to remain largely stable."
+  },
+  {
+    "paper_id": "2603.12037v1",
+    "title": "Frequentist Consistency of Prior-Data Fitted Networks for Causal Inference",
+    "question": "What is the primary limitation of existing Prior-Data Fitted Networks (PFNs) for causal inference that this paper addresses, and what is the proposed solution?",
+    "answer": "The paper addresses the limitation that existing PFNs, when interpreted as Bayesian ATE estimators, can exhibit prior-induced confounding bias because the prior is not asymptotically overwritten by data, preventing frequentist consistency. The proposed solution is to employ a calibration procedure based on a one-step posterior correction (OSPC)."
+  },
+  {
+    "paper_id": "2603.12031v1",
+    "title": "AGMARL-DKS: An Adaptive Graph-Enhanced Multi-Agent Reinforcement Learning for Dynamic Kubernetes Scheduling",
+    "question": "What are the three main limitations of existing RL-based schedulers for Kubernetes that AGMARL-DKS aims to address?",
+    "answer": "AGMARL-DKS aims to address three main limitations of existing RL-based schedulers: the non-scalability of monolithic centralized agents for large clusters, the assumption of simple, static, linear combinations for multi-objective reward functions, and the lack of stress-aware schedulers that can adapt to dynamic conditions."
+  },
+  {
+    "paper_id": "2603.12026v1",
+    "title": "Efficient Generative Modeling with Unitary Matrix Product States Using Riemannian Optimization",
+    "question": "What specific type of matrix product state (MPS) architecture does the paper propose for generative modeling, and what are its key advantages?",
+    "answer": "The paper proposes using unitary MPS for generative modeling, highlighting that this architecture is both simple and expressive, leading to reduced ambiguity in parameter updates and improved efficiency."
+  },
+  {
+    "paper_id": "2603.12015v1",
+    "title": "Flowcean - Model Learning for Cyber-Physical Systems",
+    "question": "What is the primary goal of the Flowcean framework presented in the paper?",
+    "answer": "The primary goal of the Flowcean framework is to automate the generation of models for Cyber-Physical Systems (CPS) through data-driven learning, emphasizing modularity and usability."
+  },
+  {
+    "paper_id": "2603.12012v1",
+    "title": "Deep Learning-Based Metamodeling of Nonlinear Stochastic Dynamic Systems under Parametric and Predictive Uncertainty",
+    "question": "What are the three distinct deep learning-based metamodeling frameworks proposed in this paper for nonlinear stochastic dynamic systems, and what components do they integrate?",
+    "answer": "The paper proposes three metamodeling frameworks: one coupling a multi-layer perceptron (MLP) with an LSTM, another coupling a message-passing neural network (MPNN) with an LSTM, and a third coupling an autoencoder (AE) with an LSTM. Each framework integrates a feature-extraction module with a long short-term memory (LSTM) network, utilizing Monte Carlo dropout to account for predictive uncertainty."
+  },
+  {
+    "paper_id": "2603.12001v1",
+    "title": "Decentralized Orchestration Architecture for Fluid Computing: A Secure Distributed AI Use Case",
+    "question": "What is the main limitation of existing solutions for resource management across the computing continuum that the proposed fluid computing architecture aims to address?",
+    "answer": "Existing solutions for resource management across the computing continuum are largely centralized and often do not explicitly address multi-domain considerations, which the proposed agnostic multi-domain orchestration architecture for fluid computing environments aims to overcome."
+  },
+  {
+    "paper_id": "2603.11992v1",
+    "title": "Few-for-Many Personalized Federated Learning",
+    "question": "How does the proposed Few-for-Many Personalized Federated Learning approach address the scalability challenge of training distinct models for a large number of clients?",
+    "answer": "The Few-for-Many Personalized Federated Learning approach addresses scalability by reformulating the problem as a few-for-many optimization, maintaining only K shared server models instead of M distinct models for M clients."
+  },
+  {
+    "paper_id": "2603.11991v1",
+    "title": "BTZSC: A Benchmark for Zero-Shot Text Classification Across Cross-Encoders, Embedding Models, Rerankers and LLMs",
+    "question": "What is the primary motivation behind the creation of the BTZSC benchmark, according to the abstract?",
+    "answer": "The primary motivation for creating the BTZSC benchmark is to address the difficulty in systematically comparing diverse zero-shot text classification approaches, such as cross-encoders, embedding models, rerankers, and LLMs, because existing evaluations often incorporate labeled examples, thus not fully exploring genuine zero-shot capabilities."
+  },
+  {
+    "paper_id": "2603.11989v1",
+    "title": "On-Average Stability of Multipass Preconditioned SGD and Effective Dimension",
+    "question": "How does the paper connect the generalization of multipass Preconditioned SGD (PSGD) to the effective dimension?",
+    "answer": "The paper connects the generalization of PSGD to the effective dimension by employing on-average algorithmic stability, where the effective dimension depends on the population risk curvature and the geometry of the gradient noise."
+  },
+  {
+    "paper_id": "2603.11972v1",
+    "title": "Topological DeepONets and a generalization of the Chen-Chen operator approximation theorem",
+    "question": "What is the key topological extension introduced in this paper for DeepONets, and how does it differ from the classical framework?",
+    "answer": "The paper introduces a topological extension where the operator input can lie in an arbitrary Hausdorff locally convex space X, unlike the classical framework which typically restricts inputs to functions defined on compact sets like C(K1). This topological extension utilizes continuous linear functionals from the dual space X* for the branch component of the topological DeepONets."
+  },
+  {
+    "paper_id": "2603.11970v1",
+    "title": "Statistical and structural identifiability in representation learning",
+    "question": "How does this paper distinguish between statistical and structural identifiability in representation learning?",
+    "answer": "The paper formalizes representation learning stability into two distinct concepts: statistical identifiability, defined as the consistency of representations across different training runs, and structural identifiability, defined as the alignment of learned representations with some unobserved ground truth."
+  },
+  {
+    "paper_id": "2603.11965v1",
+    "title": "Uncovering Locally Low-dimensional Structure in Networks by Locally Optimal Spectral Embedding",
+    "question": "What is the primary limitation of standard Adjacency Spectral Embedding (ASE) that Local Adjacency Spectral Embedding (LASE) aims to address?",
+    "answer": "Standard Adjacency Spectral Embedding (ASE) relies on a global low-rank assumption which is often incompatible with the sparse, transitive structure of real-world networks, leading to the smearing of local geometric features."
+  }
+]
