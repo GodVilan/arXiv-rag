@@ -12,7 +12,7 @@
 **Semantic question answering over 120 arXiv ML papers.**  
 **Ask anything. Get grounded answers from real papers.**
 
-[Demo](#-demo) · [Quick Start](#-quick-start) · [Results](#-benchmark-results) · [Architecture](#-architecture) · [Structure](#-project-structure)
+[Demo](#demo) · [Quick Start](#quick-start) · [Results](#benchmark-results) · [Architecture](#architecture) · [Structure](#project-structure)
 
 </div>
 
@@ -24,7 +24,7 @@
 
 ## Overview
 
-`arxiv-rag` is a production-structured Retrieval-Augmented Generation pipeline that answers
+`arXiv-rag` is a production-structured Retrieval-Augmented Generation pipeline that answers
 questions about machine learning research by retrieving semantically relevant passages from
 a 120-paper arXiv corpus and generating grounded answers via Google Gemini.
 
@@ -126,7 +126,7 @@ arXiv API (120 papers)
 ## Project Structure
 
 ```
-arxiv-rag/
+arXiv-rag/
 │
 ├── app.py                        # Streamlit UI — entry point
 ├── main.py                       # CLI demo   — entry point
@@ -194,13 +194,13 @@ arxiv-rag/
 ### Install
 
 ```bash
-git clone https://github.com/yourusername/arxiv-rag
-cd arxiv-rag
+git clone https://github.com/GodVilan/arXiv-rag
+cd arXiv-rag
 
-python -m venv venv
+python3 -m venv venv
 source venv/bin/activate          # Windows: venv\Scripts\activate
 
-pip install -r requirements.txt
+pip3 install -r requirements.txt
 
 cp .env.example .env
 # open .env and set: GEMINI_API_KEY=AIza...
@@ -210,20 +210,20 @@ cp .env.example .env
 
 ```bash
 # 1 — Download 120 arXiv ML papers (~10 min)
-python -c "from rag.data.collector import download_papers; download_papers()"
+python3 -c "from rag.data.collector import download_papers; download_papers()"
 
 # 2 — Generate evaluation QA pairs via Gemini (~2 min)
-python rag/evaluation/qa_generator.py --n 20
+python3 rag/evaluation/qa_generator.py --n 20
 
 # 3 — Run full benchmark: BM25 + 3 models × 3 chunk sizes (~15 min)
-python scripts/run_experiments.py
+python3 scripts/run_experiments.py
 
 # 4 — Launch the UI
 streamlit run app.py
 
 # 5 — Or use the CLI
-python main.py --model BGE --top_k 5
-python main.py --list             # browse all 120 papers
+python3 main.py --model BGE --top_k 5
+python3 main.py --list             # browse all 120 papers
 ```
 
 ---
