@@ -4,7 +4,7 @@ metrics.py – Retrieval and generation evaluation metrics.
 Retrieval metrics:
   • Recall@K          – fraction of relevant docs found in top-K
   • Precision@K       – fraction of top-K results that are relevant
-  • MRR               – Mean Reciprocal Rank
+  • MRR@K             – Mean Reciprocal Rank within top-K
 
 Generation metrics (reference-free, LLM-based approximations):
   • Answer Relevance  – cosine similarity between question and answer embeddings
@@ -64,7 +64,7 @@ class MetricResult:
 
 class RetrievalEvaluator:
     """
-    Computes Recall@K, Precision@K, and MRR over a list of QAPairs.
+    Computes Recall@K, Precision@K, and MRR@K over a list of QAPairs.
     """
 
     @staticmethod
@@ -125,7 +125,7 @@ class RetrievalEvaluator:
         return {
             f"Recall@{k}":    round(float(np.mean(recalls)),    4),
             f"Precision@{k}": round(float(np.mean(precisions)), 4),
-            "MRR":            round(float(np.mean(rrs)),         4),
+            f"MRR@{k}":       round(float(np.mean(rrs)),         4),
         }
 
     def evaluate_k_sweep(

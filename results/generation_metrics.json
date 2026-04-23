@@ -2,37 +2,37 @@
   {
     "model_key": "MiniLM",
     "chunk_size": 512,
-    "latency_ms": 2250.08,
+    "latency_ms": 1107.17,
     "qa_source": "manual",
-    "Answer Relevance": 0.7092,
-    "Faithfulness": 0.9737,
-    "Context Precision": 0.99
+    "Answer Relevance": 0.7283,
+    "Faithfulness": 0.997,
+    "Context Precision": 0.9867
   },
   {
     "model_key": "MPNet",
     "chunk_size": 512,
-    "latency_ms": 2554.72,
+    "latency_ms": 979.65,
     "qa_source": "manual",
-    "Answer Relevance": 0.7236,
-    "Faithfulness": 0.9917,
-    "Context Precision": 0.985
+    "Answer Relevance": 0.7194,
+    "Faithfulness": 0.9952,
+    "Context Precision": 0.9867
   },
   {
     "model_key": "BGE",
     "chunk_size": 512,
-    "latency_ms": 1338.96,
+    "latency_ms": 1271.72,
     "qa_source": "manual",
-    "Answer Relevance": 0.9102,
-    "Faithfulness": 0.9778,
+    "Answer Relevance": 0.9116,
+    "Faithfulness": 0.9887,
     "Context Precision": 1.0
   },
   {
     "model_key": "BM25",
     "chunk_size": 512,
-    "latency_ms": 5050.87,
+    "latency_ms": 1437.31,
     "qa_source": "manual",
-    "Answer Relevance": 0.1182,
-    "Faithfulness": 0.9667,
+    "Answer Relevance": 0.1253,
+    "Faithfulness": 0.9863,
     "Context Precision": 1.0
   }
 ]

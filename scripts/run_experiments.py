@@ -100,11 +100,19 @@ def _get_qa_pairs(chunks: list, n: int) -> tuple[list, str]:
     """
     manual = load_manual_qa_pairs(chunks)
     if manual:
-        log.info("  Using %d manual QA pairs", len(manual))
+        if len(manual) > n:
+            log.info("  Using %d/%d manual QA pairs", n, len(manual))
+            manual = manual[:n]
+        else:
+            log.info("  Using %d manual QA pairs", len(manual))
         return manual, "manual"
     pairs = create_synthetic_qa_pairs(chunks, n=n)
     log.info("  Using %d synthetic QA pairs", len(pairs))
     return pairs, "synthetic"
+
+
+def _default_mrr_metric() -> str:
+    return f"MRR@{config.DEFAULT_TOP_K}"
 
 
 def _measure_retrieval_latency(retriever, qa_pairs: list, top_k: int, n: int = 20) -> float:
@@ -129,6 +137,7 @@ def step_retrieval(chunks_by_size: dict[int, list]) -> list[dict]:
     all_results: list[dict] = []
     index_dir = config.RESULTS_DIR / "indices"
     index_dir.mkdir(parents=True, exist_ok=True)
+    default_mrr_metric = _default_mrr_metric()
 
     for cs, chunks in chunks_by_size.items():
         qa_pairs, qa_source = _get_qa_pairs(chunks, n=config.RETRIEVAL_EVAL_SAMPLES)
@@ -151,8 +160,8 @@ def step_retrieval(chunks_by_size: dict[int, list]) -> list[dict]:
             row_bm25.update(metrics)
 
         all_results.append(row_bm25)
-        log.info("    BM25 → latency=%.1fms  MRR=%.4f",
-                 latency_ms, row_bm25.get("MRR", 0))
+        log.info("    BM25 → latency=%.1fms  %s=%.4f",
+                 latency_ms, default_mrr_metric, row_bm25.get(default_mrr_metric, 0))
 
         # ── Dense embedding models ─────────────────────────────────────────
         for model_key in config.EMBEDDING_MODELS:
@@ -180,8 +189,8 @@ def step_retrieval(chunks_by_size: dict[int, list]) -> list[dict]:
                 row.update(metrics)
 
             all_results.append(row)
-            log.info("    → latency=%.1fms  MRR=%.4f",
-                     latency_ms, row.get("MRR", 0))
+            log.info("    → latency=%.1fms  %s=%.4f",
+                     latency_ms, default_mrr_metric, row.get(default_mrr_metric, 0))
 
     return all_results
 
@@ -282,6 +291,7 @@ def step_save_and_plot(
 
     ret_df = pd.DataFrame(retrieval_results)
     gen_df = pd.DataFrame(generation_results)
+    mrr_metric = _default_mrr_metric()
 
     # ── CSV + JSON ────────────────────────────────────────────────────────────
     ret_df.to_csv(config.RESULTS_DIR / "retrieval_metrics.csv", index=False)
@@ -295,13 +305,18 @@ def step_save_and_plot(
     # ── Retrieval bar charts ──────────────────────────────────────────────────
     _plot_metric_bar(ret_df, metric="Recall@5",    title="Recall@5 by Model & Chunk Size")
     _plot_metric_bar(ret_df, metric="Precision@5", title="Precision@5 by Model & Chunk Size")
-    _plot_metric_bar(ret_df, metric="MRR",         title="MRR by Model & Chunk Size")
+    _plot_metric_bar(
+        ret_df,
+        metric=mrr_metric,
+        title=f"{mrr_metric} by Model & Chunk Size",
+        filename="MRR.png",
+    )
 
     # ── Generation metrics ────────────────────────────────────────────────────
     _plot_gen_metrics(gen_df)
 
     # ── Heat-map ──────────────────────────────────────────────────────────────
-    _plot_heatmap(ret_df, metric="MRR")
+    _plot_heatmap(ret_df, metric=mrr_metric, filename="heatmap_MRR.png")
 
     # ── Latency chart (new) ───────────────────────────────────────────────────
     _plot_latency(ret_df)
@@ -314,7 +329,12 @@ def step_save_and_plot(
 
 # ── Plot helpers ──────────────────────────────────────────────────────────────
 
-def _plot_metric_bar(df: pd.DataFrame, metric: str, title: str) -> None:
+def _plot_metric_bar(
+    df: pd.DataFrame,
+    metric: str,
+    title: str,
+    filename=None,
+) -> None:
     if metric not in df.columns:
         return
     fig, ax     = plt.subplots(figsize=(10, 5))
@@ -349,7 +369,8 @@ def _plot_metric_bar(df: pd.DataFrame, metric: str, title: str) -> None:
     ax.legend()
     ax.set_ylim(0, 1.1)
     plt.tight_layout()
-    plt.savefig(PLOTS_DIR / f"{metric.replace('@', '_at_')}.png", dpi=150)
+    plot_name = filename or f"{metric.replace('@', '_at_')}.png"
+    plt.savefig(PLOTS_DIR / plot_name, dpi=150)
     plt.close()
 
 
@@ -385,7 +406,11 @@ def _plot_gen_metrics(gen_df: pd.DataFrame) -> None:
     plt.close()
 
 
-def _plot_heatmap(df: pd.DataFrame, metric: str = "MRR") -> None:
+def _plot_heatmap(
+    df: pd.DataFrame,
+    metric: str,
+    filename=None,
+) -> None:
     if metric not in df.columns:
         return
     pivot = df.pivot_table(index="model_key", columns="chunk_size", values=metric)
@@ -399,13 +424,15 @@ def _plot_heatmap(df: pd.DataFrame, metric: str = "MRR") -> None:
     ax.set_ylabel("Model")
     ax.set_xlabel("Chunk Size (tokens)")
     plt.tight_layout()
-    plt.savefig(PLOTS_DIR / f"heatmap_{metric.replace('@','_at_')}.png", dpi=150)
+    plot_name = filename or f"heatmap_{metric.replace('@','_at_')}.png"
+    plt.savefig(PLOTS_DIR / plot_name, dpi=150)
     plt.close()
 
 
 def _plot_latency(df: pd.DataFrame) -> None:
-    """Latency vs MRR scatter — the accuracy/speed trade-off plot."""
-    if "latency_ms" not in df.columns or "MRR" not in df.columns:
+    """Latency vs default MRR@K scatter — the accuracy/speed trade-off plot."""
+    mrr_metric = _default_mrr_metric()
+    if "latency_ms" not in df.columns or mrr_metric not in df.columns:
         return
 
     sub = df[df["chunk_size"] == config.DEFAULT_CHUNK].copy()
@@ -419,17 +446,19 @@ def _plot_latency(df: pd.DataFrame) -> None:
     for _, row in sub.iterrows():
         model = row["model_key"]
         color = color_map.get(model, "#aaa")
-        ax.scatter(row["latency_ms"], row["MRR"],
+        ax.scatter(row["latency_ms"], row[mrr_metric],
                    s=180, color=color, zorder=3,
                    edgecolors="white", linewidths=0.8)
         ax.annotate(model,
-                    xy=(row["latency_ms"], row["MRR"]),
+                    xy=(row["latency_ms"], row[mrr_metric]),
                     xytext=(6, 4), textcoords="offset points",
                     fontsize=10, color=color)
 
     ax.set_xlabel("Retrieval Latency per Query (ms)")
-    ax.set_ylabel("MRR")
-    ax.set_title(f"Accuracy vs Speed Trade-off (chunk_size={config.DEFAULT_CHUNK})")
+    ax.set_ylabel(mrr_metric)
+    ax.set_title(
+        f"Accuracy vs Speed Trade-off ({mrr_metric}, chunk_size={config.DEFAULT_CHUNK})"
+    )
     ax.grid(True, alpha=0.3)
     ax.set_ylim(0, 1.05)
     plt.tight_layout()
@@ -455,8 +484,9 @@ def _plot_latency(df: pd.DataFrame) -> None:
 
 
 def _plot_bm25_vs_dense(df: pd.DataFrame) -> None:
-    """Side-by-side MRR: BM25 vs best dense model at each chunk size."""
-    if "MRR" not in df.columns:
+    """Side-by-side default MRR@K: BM25 vs best dense model at each chunk size."""
+    mrr_metric = _default_mrr_metric()
+    if mrr_metric not in df.columns:
         return
 
     chunk_sizes = sorted(df["chunk_size"].unique())
@@ -464,13 +494,13 @@ def _plot_bm25_vs_dense(df: pd.DataFrame) -> None:
 
     for cs in chunk_sizes:
         sub  = df[df["chunk_size"] == cs]
-        bm25 = sub[sub["model_key"] == "BM25"]["MRR"].values
+        bm25 = sub[sub["model_key"] == "BM25"][mrr_metric].values
         bm25_mrr.append(bm25[0] if len(bm25) > 0 else 0.0)
 
         dense = sub[sub["model_key"] != "BM25"]
         if not dense.empty:
-            best_row = dense.loc[dense["MRR"].idxmax()]
-            best_dense_mrr.append(best_row["MRR"])
+            best_row = dense.loc[dense[mrr_metric].idxmax()]
+            best_dense_mrr.append(best_row[mrr_metric])
             best_dense_name.append(best_row["model_key"])
         else:
             best_dense_mrr.append(0.0)
@@ -488,8 +518,8 @@ def _plot_bm25_vs_dense(df: pd.DataFrame) -> None:
                 ha="center", va="bottom", fontsize=8, color="#2d6a4f")
 
     ax.set_xlabel("Chunk Size (tokens)")
-    ax.set_ylabel("MRR")
-    ax.set_title("BM25 Baseline vs Best Dense Model — MRR")
+    ax.set_ylabel(mrr_metric)
+    ax.set_title(f"BM25 Baseline vs Best Dense Model — {mrr_metric}")
     ax.set_xticks(x)
     ax.set_xticklabels(chunk_sizes)
     ax.legend()
@@ -509,7 +539,7 @@ def main() -> None:
     papers         = step_data()
     chunks_by_size = step_chunking(papers)
     ret_results    = step_retrieval(chunks_by_size)
-    gen_results    = step_generation(chunks_by_size, ret_results)
+    gen_results    = step_generation(chunks_by_size)
     step_save_and_plot(ret_results, gen_results)
 
     elapsed = time.time() - start

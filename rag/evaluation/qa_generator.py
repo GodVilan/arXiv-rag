@@ -10,7 +10,9 @@ Run:
 
 import json
 import logging
+import re
 import time
+from pathlib import Path
 
 from google import genai
 from google.genai import types
@@ -32,7 +34,7 @@ generate exactly ONE question-answer pair that:
   3. Tests understanding of the paper's core contribution or method
   4. Uses natural language a researcher would actually ask
 
-Respond in this exact JSON format with no other text:
+Respond in this exact JSON format with no other text. Ensure all special characters are properly escaped:
 {
   "question": "...",
   "answer": "..."
@@ -52,10 +54,24 @@ Content excerpt:
 Generate one specific question-answer pair about this paper's contribution or method."""
 
 
+def clean_json_response(raw: str) -> str:
+    """Clean JSON response from Gemini by fixing invalid escape sequences."""
+    # Remove invalid backslash escapes that aren't valid JSON escapes
+    # Valid JSON escapes: \", \\, \/, \b, \f, \n, \r, \t, \uXXXX
+    # Replace \X where X is not one of the above with just X
+    def fix_escapes(text):
+        # Match backslash followed by character that's NOT a valid JSON escape
+        pattern = r'\\([^"\\\/bfnrtu])'
+        # Replace with just the character (remove the backslash)
+        return re.sub(pattern, r'\1', text)
+    
+    return fix_escapes(raw)
+
+
 # ── Main ──────────────────────────────────────────────────────────────────────
 
 def generate_qa_pairs(
-    n_papers: int = 20,
+    n_papers: int = 100,
     output_path: str = None,
 ) -> list[dict]:
     output_path = output_path or str(config.DATA_DIR / "manual_qa.json")
@@ -91,11 +107,36 @@ def generate_qa_pairs(
     )
 
     interval = 60.0 / config.GEMINI_RPM   # rate limit spacing
-    results  = []
-    selected = [p for p in papers if p["paper_id"] in paper_first_chunk][:n_papers]
-
-    log.info("Generating QA pairs for %d papers (%.1fs between calls) …",
-             len(selected), interval)
+    
+    # Load existing QA pairs if they exist
+    existing_pairs = []
+    existing_paper_ids = set()
+    if Path(output_path).exists():
+        try:
+            with open(output_path) as f:
+                existing_pairs = json.load(f)
+                existing_paper_ids = {pair["paper_id"] for pair in existing_pairs}
+            log.info("Found %d existing QA pairs in %s", len(existing_pairs), output_path)
+        except Exception as e:
+            log.warning("Failed to load existing QA pairs: %s", e)
+    
+    # Filter out papers that already have QA pairs
+    available_papers = [p for p in papers if p["paper_id"] in paper_first_chunk 
+                        and p["paper_id"] not in existing_paper_ids]
+    
+    # Calculate how many more we need to generate
+    papers_to_generate = max(0, n_papers - len(existing_pairs))
+    selected = available_papers[:papers_to_generate]
+    
+    results = []
+    
+    if papers_to_generate <= 0:
+        log.info("✓ Already have %d QA pairs (target: %d). No new generation needed.", 
+                 len(existing_pairs), n_papers)
+        return existing_pairs
+    else:
+        log.info("Have %d existing pairs, generating %d more to reach %d (%.1fs between calls) …",
+                 len(existing_pairs), len(selected), n_papers, interval)
 
     for i, paper in enumerate(selected, 1):
         pid      = paper["paper_id"]
@@ -123,6 +164,8 @@ def generate_qa_pairs(
                     raw = raw[4:]
             raw = raw.strip()
 
+            # Clean and parse JSON
+            raw = clean_json_response(raw)
             parsed = json.loads(raw)
             question = parsed.get("question", "").strip()
             answer   = parsed.get("answer", "").strip()
@@ -140,16 +183,19 @@ def generate_qa_pairs(
             log.info("  Q: %s", question[:80])
 
         except json.JSONDecodeError as e:
-            log.warning("  JSON parse error: %s — raw: %s", e, raw[:100])
+            log.warning("  JSON parse error: %s at line %d column %d", e.msg, e.lineno, e.colno)
+            log.debug("  Raw response: %s", raw[:200])
         except Exception as e:
             log.error("  Gemini error: %s", e)
 
-    # Save
+    # Save - merge with existing pairs
+    all_results = existing_pairs + results
     with open(output_path, "w") as f:
-        json.dump(results, f, indent=2)
+        json.dump(all_results, f, indent=2)
 
-    log.info("Saved %d QA pairs to %s", len(results), output_path)
-    return results
+    log.info("Saved %d total QA pairs to %s (newly generated: %d)", 
+             len(all_results), output_path, len(results))
+    return all_results
 
 
 # ── Entry point ───────────────────────────────────────────────────────────────
@@ -157,7 +203,7 @@ def generate_qa_pairs(
 if __name__ == "__main__":
     import argparse
     p = argparse.ArgumentParser(description="Auto-generate manual_qa.json using Gemini")
-    p.add_argument("--n",      type=int, default=20,  help="Number of papers to process")
+    p.add_argument("--n",      type=int, default=100,  help="Number of papers to process")
     p.add_argument("--output", type=str, default=None, help="Output path (default: data/manual_qa.json)")
     args = p.parse_args()
 

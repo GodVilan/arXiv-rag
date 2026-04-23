@@ -1,15 +1,28 @@
 """
-generation.py – Answer generation using Google Gemini (google-genai SDK).
+generation.py – Answer generation using local Llama model via Ollama or Google Gemini.
 """
 
 import logging
 import time
 import threading
-
-from google import genai
-from google.genai import types
+import os
 
 from rag import config
+
+# Optional: use Ollama for local Llama inference
+try:
+    import requests
+    HAS_OLLAMA = True
+except ImportError:
+    HAS_OLLAMA = False
+
+# Optional: use Google Gemini
+try:
+    from google import genai
+    from google.genai import types
+    HAS_GEMINI = True
+except ImportError:
+    HAS_GEMINI = False
 
 log = logging.getLogger(__name__)
 
@@ -54,6 +67,70 @@ class _RateLimiter:
             self._last_call = time.monotonic()
 
 
+# ── Ollama generator (local Llama inference) ──────────────────────────────────
+
+class OllamaGenerator:
+    def __init__(
+        self,
+        model_name: str    = config.OLLAMA_MODEL,
+        api_url: str       = config.OLLAMA_API_URL,
+        temperature: float = config.OLLAMA_TEMPERATURE,
+    ) -> None:
+        if not HAS_OLLAMA:
+            raise ImportError("requests library required for Ollama. Install with: pip install requests")
+
+        self._model_name = model_name
+        self._api_url    = api_url
+        self._temperature = temperature
+        
+        # Test connection
+        try:
+            resp = requests.get(f"{api_url}/api/tags", timeout=5)
+            if resp.status_code == 200:
+                models = [m["name"] for m in resp.json().get("models", [])]
+                if model_name not in models:
+                    log.warning("Model %s not found in Ollama. Available: %s", model_name, models)
+                else:
+                    log.info("Ollama ready  model=%s  url=%s", model_name, api_url)
+            else:
+                log.warning("Could not connect to Ollama at %s", api_url)
+        except Exception as e:
+            log.warning("Ollama connection check failed: %s", e)
+
+    def generate(self, query: str, context: str, retries: int = 3) -> str:
+        prompt = _build_prompt(query, context)
+
+        for attempt in range(1, retries + 1):
+            try:
+                response = requests.post(
+                    f"{self._api_url}/api/generate",
+                    json={
+                        "model": self._model_name,
+                        "prompt": prompt,
+                        "temperature": self._temperature,
+                        "stream": False,
+                    },
+                    timeout=300,  # 5 min timeout for long responses
+                )
+                
+                if response.status_code == 200:
+                    result = response.json()
+                    return result.get("response", "").strip()
+                else:
+                    log.error("Ollama error (status %d): %s", response.status_code, response.text)
+                    return f"[Generation error: HTTP {response.status_code}]"
+                    
+            except requests.exceptions.Timeout:
+                log.warning("Ollama timeout on attempt %d/%d", attempt, retries)
+                if attempt < retries:
+                    time.sleep(10 * attempt)
+            except Exception as exc:
+                log.error("Ollama error: %s", exc)
+                return f"[Generation error: {exc}]"
+
+        return "[Generation error: max retries exceeded]"
+
+
 # ── Gemini generator (new google-genai SDK) ───────────────────────────────────
 
 class GeminiGenerator:
@@ -65,6 +142,9 @@ class GeminiGenerator:
         max_tokens: int    = config.GEMINI_MAX_TOKENS,
         rpm: int           = config.GEMINI_RPM,
     ) -> None:
+        if not HAS_GEMINI:
+            raise ImportError("google-genai library required for Gemini. Install with: pip install google-genai")
+        
         if not api_key:
             raise ValueError("GEMINI_API_KEY not set. Add it to .env:  GEMINI_API_KEY=AIza...")
 
@@ -108,7 +188,13 @@ class GeminiGenerator:
 
 class Generator:
     def __init__(self) -> None:
-        self._backend = GeminiGenerator()
+        # Choose backend based on config
+        if config.USE_OLLAMA:
+            log.info("Using Ollama backend for generation")
+            self._backend = OllamaGenerator()
+        else:
+            log.info("Using Gemini backend for generation")
+            self._backend = GeminiGenerator()
 
     def generate(self, query: str, context: str) -> str:
         return self._backend.generate(query=query, context=context)
